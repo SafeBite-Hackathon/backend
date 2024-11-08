@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      dockerfile: Dockerfile.app
+    depends_on:
+      - db
+      - redis
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+  db:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=app
+      - POSTGRES_DB=app
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+  pdadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+  redis:
+    image: redis
