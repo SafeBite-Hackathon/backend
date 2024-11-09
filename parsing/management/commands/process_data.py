@@ -48,7 +48,6 @@ def goc_image(url):
         return None
     
     filename = sha3_256(url.encode()).hexdigest() + "." + url.split(".")[-1]
-    print(filename)
     image = models.Image()
     image.foreign_image = url
     image.image.save(filename, ContentFile(r.content))
@@ -67,6 +66,7 @@ class Command(BaseCommand):
         items = models.FetchItem.objects.all()
 
         for item in items:
+            print(f"Processing: {item.url}")
             lds = item.raw_json.get("lds", [])
 
             state = item.raw_json.get("preloadState", {})
@@ -90,12 +90,11 @@ class Command(BaseCommand):
 
             images = sum([obj.get("image") if isinstance(obj.get("image"), list) else [] for obj in lds], [])
             image_url = images[0] if len(images) > 0 else None
-            print(image_url)
+
             if image_url is not None:
                 image = goc_image(image_url)
 
             if recipe.get("id") is not None:
-                # print(item.url)
                 recipe_obj = cou_recipe(recipe)
                 recipe_obj.tag_clouds.set(tags)
                 recipe_obj.fetch_item = item
