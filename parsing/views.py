@@ -1,5 +1,14 @@
 from rest_framework import generics, status, response
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 from parsing import serializers, models
+
+
+class Login(ObtainAuthToken):
+    pass
+
+class Register(ObtainAuthToken):
+    serializer_class = serializers.Register
 
 
 class FetchItem(generics.CreateAPIView):

@@ -73,7 +73,7 @@ class Recipe(models.Model):
     images = models.ManyToManyField(Image)
 
     tag_clouds = models.ManyToManyField(TagCloud)
-    # tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag)
 
     ingredient = ArrayField(models.CharField(max_length=2048), default=list)
     instructions = ArrayField(models.CharField(max_length=2048), default=list)

@@ -71,7 +71,65 @@ def goc_image(url):
     image.image.save(filename, ContentFile(r.content))
     image.save()
     return image
+
+def goc_tag(data):
+    return models.Tag.objects.get_or_create(foreign_id=data.get("foreign_id"), defaults=data)[0]
+
+def handle_tags(data):
+    tags_raw = data.get("tags", [])
+    if not isinstance(tags_raw, list):
+        return []
+
+    result = []
+    cache = {}
+
+    for tag in tags_raw:
+        tag_id = tag.get("id")
+        if tag_id not in cache:
+            cache[tag_id] = {
+                "foreign_id": tag_id,
+                "name": tag.get("name", ""),
+                "slug": tag.get("slug", ""),
+                "parent": None
+            }
+
+        lid = tag_id
+        for htag in tag.get("hierarchy", []):
+            htag_id = htag.get("id")
+            if htag_id not in cache:
+                cache[htag_id] = {
+                    "foreign_id": htag_id,
+                    "name": htag.get("name", ""),
+                    "slug": htag.get("slug", ""),
+                    "parent": None
+                }
+            cache[lid]["parent"] = htag_id
+            lid = htag_id
     
+    for tag_id in map(lambda x: x.get("id"), tags_raw):
+        hierarchy = []
+        tag = cache[tag_id]
+        parent = tag.get("parent")
+
+        while parent is not None:
+            hierarchy.append(tag)
+            tag = cache[parent]
+            parent = tag.get("parent")
+        hierarchy.append(tag)
+
+        last_tag = None
+        while len(hierarchy) != 0:
+            tag_raw = {**hierarchy.pop()}
+            if tag_raw["parent"] is not None:
+                tag_raw["parent"] = goc_tag(cache[tag_raw["parent"]])
+            tag = goc_tag(tag_raw)
+            last_tag = tag
+        
+        if last_tag is not None:
+            result.append(last_tag)
+
+    return result
+
 
 class Command(BaseCommand):
     # help = "Closes the specified poll for voting"
@@ -90,8 +148,8 @@ class Command(BaseCommand):
             state = item.raw_json.get("preloadState", {})
             transformed = state.get("transformed", {})
             recipe = transformed.get("recipe", {})
-            tagCloud = recipe.get("tagCloud", {})
-            tags = list(map(lambda x: goc_tag_cloud(x), tagCloud.get("tags", [])))
+            tag_clouds_raw = recipe.get("tagCloud", {})
+            tag_clouds = list(map(lambda x: goc_tag_cloud(x), tag_clouds_raw.get("tags", [])))
             ingredient = parse_react_strings(
                 recipe.get("ingredientGroups", []),
                 lambda x: x.get("ingredients", []),
@@ -113,7 +171,8 @@ class Command(BaseCommand):
 
             if recipe.get("id") is not None:
                 recipe_obj = cou_recipe(recipe)
-                recipe_obj.tag_clouds.set(tags)
+                recipe_obj.tag_clouds.set(tag_clouds)
+                recipe_obj.tags.set(handle_tags(recipe))
                 recipe_obj.fetch_item = item
                 recipe_obj.ingredient = ingredient
                 recipe_obj.instructions = instructions
