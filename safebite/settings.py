@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure-51sx^4om%&8d$e20+%vy1nj--xnxr#c&g-qek=x$k=ew7=pgrf
 DEBUG = True
 
 ALLOWED_HOSTS = ['sb-api.dowhile.uz']
+CSRF_TRUSTED_ORIGINS = ['https://sb-api.dowhile.uz']
 
 
 # Application definition
