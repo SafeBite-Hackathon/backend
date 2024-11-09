@@ -1,14 +1,24 @@
 from rest_framework import generics, status, response
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 from parsing import serializers, models
 
 
 class Login(ObtainAuthToken):
     pass
 
+
 class Register(ObtainAuthToken):
     serializer_class = serializers.Register
+
+
+class Profile(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.Profile
+
+    def get(self, request, *args, **kwargs):
+        serilazer = self.get_serializer(self.request.user)
+        return response.Response(serilazer.data, status=status.HTTP_200_OK)
 
 
 class FetchItem(generics.CreateAPIView):

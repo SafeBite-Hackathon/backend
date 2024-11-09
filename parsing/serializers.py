@@ -4,6 +4,12 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.contrib.auth.models import User
 
 
+class Profile(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["username"]
+
+
 class Register(AuthTokenSerializer):
     def validate(self, attrs):
         username = attrs.get('username')
@@ -27,12 +33,6 @@ class FetchItem(serializers.ModelSerializer):
     class Meta:
         model = models.FetchItem
         fields = ["url", "raw_json"]
-
-
-class TagCloud(serializers.ModelSerializer):
-    class Meta:
-        model = models.TagCloud
-        fields = ["tag"]
 
 
 class Tag(serializers.ModelSerializer):   
@@ -65,7 +65,6 @@ class Recipes(serializers.ModelSerializer):
 
 
 class Recipe(serializers.ModelSerializer):
-    tag_clouds = TagCloud(many=True)
     tags = Tag(many=True)
     images = Images(many=True)
 

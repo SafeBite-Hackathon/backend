@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from mptt.admin import MPTTModelAdmin, TreeRelatedFieldListFilter
 from parsing import models
 
 
@@ -11,12 +11,11 @@ class FetchItemAdmin(admin.ModelAdmin):
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     raw_id_fields = ["fetch_item"]
+    list_filter = (
+        ('tags', TreeRelatedFieldListFilter),
+    )
 
-
-@admin.register(models.TagCloud)
-class TagCloudAdmin(admin.ModelAdmin):
-    pass
 
 @admin.register(models.Tag)
-class TagAdmin(admin.ModelAdmin):
-    pass
+class TagAdmin(MPTTModelAdmin):
+    mptt_level_indent = 60

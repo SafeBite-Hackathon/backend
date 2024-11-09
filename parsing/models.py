@@ -2,6 +2,7 @@ from django.db import models
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from django.contrib.postgres.fields import ArrayField
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 class FetchItemStatus(models.IntegerChoices):
@@ -32,23 +33,18 @@ class Image(models.Model):
     def __str__(obj):
         return obj.foreign_image
 
-
-class TagCloud(models.Model):
-    foreign_id = models.CharField(max_length=64, unique=True)
-    foreign_path = models.CharField(max_length=4096)
-    tag = models.CharField(max_length=256)
-
-    def __str__(obj):
-        return obj.tag
     
-class Tag(models.Model):
+class Tag(MPTTModel):
     foreign_id = models.CharField(max_length=64, unique=True)
     name = models.CharField(max_length=256)
     slug = models.CharField(max_length=256)
-    parent = models.ForeignKey("parsing.Tag", on_delete=models.SET_NULL, null=True, blank=True)
+    parent = TreeForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
 
     def __str__(obj):
         return obj.name
+    
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
 
 class Recipe(models.Model):
@@ -71,8 +67,6 @@ class Recipe(models.Model):
 #     total_time = models.CharField()
     
     images = models.ManyToManyField(Image)
-
-    tag_clouds = models.ManyToManyField(TagCloud)
     tags = models.ManyToManyField(Tag)
 
     ingredient = ArrayField(models.CharField(max_length=2048), default=list)

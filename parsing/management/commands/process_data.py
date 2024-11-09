@@ -8,12 +8,12 @@ import requests
 from django.core.files.base import ContentFile
 
 
-def goc_tag_cloud(data):
-    return models.TagCloud.objects.get_or_create(foreign_id=data.get("id"), defaults={
-        "foreign_id": data.get("id"),
-        "foreign_path": data.get("url"),
-        "tag": data.get("tag"),
-    })[0]
+# def goc_tag_cloud(data):
+#     return models.TagCloud.objects.get_or_create(foreign_id=data.get("id"), defaults={
+#         "foreign_id": data.get("id"),
+#         "foreign_path": data.get("url"),
+#         "tag": data.get("tag"),
+#     })[0]
 
 def cou_recipe(data):
     servingSizeInfo = data.get("servingSizeInfo", {})
@@ -148,8 +148,8 @@ class Command(BaseCommand):
             state = item.raw_json.get("preloadState", {})
             transformed = state.get("transformed", {})
             recipe = transformed.get("recipe", {})
-            tag_clouds_raw = recipe.get("tagCloud", {})
-            tag_clouds = list(map(lambda x: goc_tag_cloud(x), tag_clouds_raw.get("tags", [])))
+            # tag_clouds_raw = recipe.get("tagCloud", {})
+            # tag_clouds = list(map(lambda x: goc_tag_cloud(x), tag_clouds_raw.get("tags", [])))
             ingredient = parse_react_strings(
                 recipe.get("ingredientGroups", []),
                 lambda x: x.get("ingredients", []),
@@ -171,7 +171,7 @@ class Command(BaseCommand):
 
             if recipe.get("id") is not None:
                 recipe_obj = cou_recipe(recipe)
-                recipe_obj.tag_clouds.set(tag_clouds)
+                # recipe_obj.tag_clouds.set(tag_clouds)
                 recipe_obj.tags.set(handle_tags(recipe))
                 recipe_obj.fetch_item = item
                 recipe_obj.ingredient = ingredient

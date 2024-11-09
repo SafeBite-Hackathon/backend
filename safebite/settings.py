@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'drf_spectacular_sidecar',
     'corsheaders',
     'rest_framework.authtoken',
+    'mptt',
 
     'parsing',
 ]
@@ -140,6 +141,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': 'safebite.custom.CustomPaginator',
+    'PAGE_SIZE': 20,
 }
 
 SPECTACULAR_SETTINGS = {
