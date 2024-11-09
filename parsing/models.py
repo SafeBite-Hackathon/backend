@@ -14,6 +14,9 @@ class FetchItem(models.Model):
     status = models.PositiveSmallIntegerField(choices=FetchItemStatus.choices, default=FetchItemStatus.pending)
     processed = models.BooleanField(default=False)
 
+    def __str__(obj):
+        return f"{'Processed' if obj.processed else 'Not processed'} - {obj.id} - {obj.url}"
+
 
 # class Image(models.Model):
 #     foreign_image = models.CharField(max_length=4096, unique=True)
