@@ -31,7 +31,7 @@ def rec_strings(data):
         if isinstance(value, str)
         else rec_strings(value)
         for value
-        in data[1:]
+        in (data[1:] if len(data) > 1 else [])
         if isinstance(value, str)
         or isinstance(value, list)
     ])
