@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-51sx^4om%&8d$e20+%vy1nj--xnxr#c&g-qek=x$k=ew7=pgrf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['sb-api.dowhile.uz']
 
 
 # Application definition
