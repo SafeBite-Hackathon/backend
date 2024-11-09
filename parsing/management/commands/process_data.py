@@ -16,9 +16,27 @@ def goc_tag_cloud(data):
     })[0]
 
 def cou_recipe(data):
+    servingSizeInfo = data.get("servingSizeInfo", {})
+    aggregateRating = data.get("aggregateRating", 0)
+    times = data.get("times", {})
+
+    if servingSizeInfo is None:
+        servingSizeInfo = {}
+
+    if aggregateRating is None:
+        aggregateRating = 0
+    
+    if times is None:
+        times = {}
+
     return models.Recipe.objects.update_or_create(foreign_id=data.get("id"), defaults={
         "foreign_id": data.get("id"),
         "name": data.get("hed", ""),
+        "rating": aggregateRating,
+        "active_time": times.get("activeTime", ""),
+        "prep_time": times.get("prepTime", ""),
+        "total_time": times.get("totalTime", ""),
+        "serving_size": servingSizeInfo.get("description", ""),
     })[0]
 
 
@@ -90,7 +108,6 @@ class Command(BaseCommand):
 
             images = sum([obj.get("image") if isinstance(obj.get("image"), list) else [] for obj in lds], [])
             image_url = images[0] if len(images) > 0 else None
-
             if image_url is not None:
                 image = goc_image(image_url)
 

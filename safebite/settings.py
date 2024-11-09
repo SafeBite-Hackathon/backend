@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['sb-api.dowhile.uz', 'localhost', '0.0.0.0']
 CSRF_TRUSTED_ORIGINS = ['https://sb-api.dowhile.uz']
 
+MEDIA_URL = "https://sb-api.dowhile.uz/"
+
 
 # Application definition
 

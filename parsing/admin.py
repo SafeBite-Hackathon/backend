@@ -8,4 +8,4 @@ class FetchItemAdmin(admin.ModelAdmin):
 
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    pass
+    raw_id_fields = ["fetch_item"]

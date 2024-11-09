@@ -26,3 +26,7 @@ class FetchItem(generics.CreateAPIView):
 class Recipes(generics.ListAPIView):
     serializer_class = serializers.Recipes
     queryset = models.Recipe.objects.all()
+
+class Recipe(generics.RetrieveAPIView):
+    serializer_class = serializers.Recipe
+    queryset = models.Recipe.objects.all()

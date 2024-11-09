@@ -57,6 +57,11 @@ class Recipe(models.Model):
 #     foreign_url = models.CharField(max_length=4096)
     name = models.CharField(max_length=1024, default="")
     description = models.TextField(default="")
+    rating = models.FloatField(default=0)
+    active_time = models.CharField(max_length=128, default="")
+    prep_time = models.CharField(max_length=128, default="")
+    total_time = models.CharField(max_length=128, default="")
+    serving_size = models.CharField(max_length=128, default="")
 
 #     alternative_headline = models.TextField(default="")
 #     article_body = models.TextField(default="")
