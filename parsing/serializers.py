@@ -39,7 +39,8 @@ class Recipes(serializers.ModelSerializer):
 
 class Recipe(serializers.ModelSerializer):
     tag_clouds = TagCloud(many=True)
+    images = Images(many=True)
 
     class Meta:
         model = models.Recipe
-        fields = ["id", "name", "tag_clouds"]
+        exclude = ["foreign_id", "fetch_item"]
