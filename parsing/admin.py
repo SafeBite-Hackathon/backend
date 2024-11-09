@@ -1,7 +1,11 @@
 from django.contrib import admin
 
-from parsing.models import FetchItem
+from parsing import models
 
-@admin.register(FetchItem)
+@admin.register(models.FetchItem)
 class FetchItemAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(models.Recipe)
+class RecipeAdmin(admin.ModelAdmin):
     pass

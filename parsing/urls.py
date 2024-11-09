@@ -3,4 +3,5 @@ from parsing import views
 
 urlpatterns = [
     path("fetch-item/", views.FetchItem.as_view()),
+    path("recipes/", views.Recipes.as_view()),
 ]

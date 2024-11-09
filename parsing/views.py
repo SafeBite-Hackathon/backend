@@ -22,3 +22,7 @@ class FetchItem(generics.CreateAPIView):
                 return response.Response([url], status=status.HTTP_201_CREATED, headers=headers)
 
         return response.Response(["url in body not found"], status=status.HTTP_400_BAD_REQUEST)
+
+class Recipes(generics.ListAPIView):
+    serializer_class = serializers.Recipes
+    queryset = models.Recipe.objects.all()

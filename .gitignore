@@ -282,3 +282,4 @@ fabric.properties
 
 *.sqlite3
 /data
+/images
