@@ -3,6 +3,7 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from django.contrib.postgres.fields import ArrayField
 from mptt.models import MPTTModel, TreeForeignKey
+from django.contrib.auth.models import User
 
 
 class FetchItemStatus(models.IntegerChoices):
@@ -74,3 +75,51 @@ class Recipe(models.Model):
 
     def __str__(obj):
         return obj.name
+
+
+class DietGoal(models.TextChoices):
+    get_inspiration = ("get_inspiration", "Get inspiration")
+    eat_healthy = ("eat_healthy", "Eat healthy")
+    loose_weight = ("loose_weight", "Loose weight")
+    build_muscles = ("build_muscles", "Build muscles")
+
+
+class DietType(models.TextChoices):
+    i_eat_everything = ("i_eat_everything", "I eat everything")
+    pescatarian = ("pescatarian", "Pescatarian")
+    vegetarian = ("vegetarian", "Vegetarian")
+    vegan = ("vegan", "Vegan")
+
+
+class MealTime(models.TextChoices):
+    breakfast = ("breakfast", "Breakfast")
+    brunch = ("brunch", "Brunch")
+    dinner = ("dinner", "Dinner")
+    lunch = ("lunch", "Lunch")
+
+
+class MealFilter(models.Model):
+    meal_time = models.CharField(max_length=64, choices=MealTime.choices)
+    diet_type = models.CharField(max_length=64, choices=DietType.choices)
+    diet_goal = models.CharField(max_length=64, choices=DietGoal.choices)
+    tags = models.ManyToManyField(Tag)
+
+    class Meta:
+        unique_together = ['meal_time', 'diet_type', 'diet_goal']
+    
+    def __str__(obj):
+        return "{} - {} - {}".format(
+            obj.get_meal_time_display(),
+            obj.get_diet_type_display(),
+            obj.get_diet_goal_display(),
+        )
+
+
+class UserPreference(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    current_weight = models.PositiveIntegerField(null=True, blank=True)
+    goal_weight = models.PositiveIntegerField(null=True, blank=True)
+    diet_goal = models.CharField(max_length=64, choices=DietGoal.choices, null=True, blank=True)
+    diet_type = models.CharField(max_length=64, choices=DietType.choices, null=True, blank=True)
+    allegries = models.ManyToManyField(Tag, related_name="allergic_users")
+    preferences = models.ManyToManyField(Tag, related_name="prerence_users")

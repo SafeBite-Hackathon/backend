@@ -42,10 +42,27 @@ class FetchItem(generics.CreateAPIView):
 
         return response.Response(["url in body not found"], status=status.HTTP_400_BAD_REQUEST)
 
+
 class Recipes(generics.ListAPIView):
     serializer_class = serializers.Recipes
     queryset = models.Recipe.objects.all()
 
+
 class Recipe(generics.RetrieveAPIView):
     serializer_class = serializers.Recipe
     queryset = models.Recipe.objects.all()
+
+
+class Tags(generics.ListAPIView):
+    serializer_class = serializers.Tag
+    queryset = models.Tag.objects.all()
+
+
+class UserPreference(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.UserPreference
+
+    def get_object(self):
+        return models.UserPreference.objects.get_or_create(defaults={
+            "user": self.request.user,
+        }, user=self.request.user)[0]

@@ -2,8 +2,10 @@ from django.contrib import admin
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from mptt.admin import MPTTModelAdmin, TreeRelatedFieldListFilter
+from mptt.forms import TreeNodeMultipleChoiceField
 from parsing import models
 from django.db.models import Count
+from django import forms
 
 
 @admin.register(models.FetchItem)
@@ -36,3 +38,21 @@ class TagAdmin(MPTTModelAdmin):
         return qs.annotate(Count("recipe"))
 
 
+@admin.register(models.UserPreference)
+class UserPreferenceAdmin(admin.ModelAdmin):
+    pass
+
+
+class MealFilterForm(forms.ModelForm):
+    tags = TreeNodeMultipleChoiceField(queryset=models.Tag.objects.all())
+    class Meta:
+        model = models.MealFilter
+        # widgets = {
+        #     'tags': TreeNodeChoiceField(queryset=models.Tag.objects.all())
+        # }
+        fields = '__all__'
+
+
+@admin.register(models.MealFilter)
+class MealFilterAdmin(admin.ModelAdmin):
+    form = MealFilterForm

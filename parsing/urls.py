@@ -6,6 +6,8 @@ urlpatterns = [
     path("register/", views.Register.as_view()),
     path("profile/", views.Profile.as_view()),
     path("fetch-item/", views.FetchItem.as_view()),
+    path("tags/", views.Tags.as_view()),
     path("recipes/", views.Recipes.as_view()),
     path("recipes/<int:pk>/", views.Recipe.as_view()),
+    path("user-preference/", views.UserPreference.as_view()),
 ]

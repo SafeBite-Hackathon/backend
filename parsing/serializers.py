@@ -71,3 +71,9 @@ class Recipe(serializers.ModelSerializer):
     class Meta:
         model = models.Recipe
         exclude = ["foreign_id", "fetch_item"]
+
+
+class UserPreference(serializers.ModelSerializer):
+    class Meta:
+        model = models.UserPreference
+        fields = "__all__"
