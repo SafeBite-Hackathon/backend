@@ -66,3 +66,19 @@ class UserPreference(generics.RetrieveUpdateAPIView):
         return models.UserPreference.objects.get_or_create(defaults={
             "user": self.request.user,
         }, user=self.request.user)[0]
+    
+
+class UserMealPreference(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.Recipes
+
+    def get_queryset(self):
+        up = models.UserPreference.objects.get_or_create(defaults={
+            "user": self.request.user,
+        }, user=self.request.user)[0]
+
+        mp = models.MealFilter.objects.filter(diet_type=up.diet_type, diet_goal=up.diet_goal)
+
+        qs = models.Recipe.objects.all()
+
+        return qs

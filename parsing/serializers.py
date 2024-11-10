@@ -38,7 +38,7 @@ class FetchItem(serializers.ModelSerializer):
 class Tag(serializers.ModelSerializer):   
     class Meta:
         model = models.Tag
-        fields = ["name", "slug"]
+        fields = ["id", "name", "slug"]
 
 
 class Images(serializers.ModelSerializer):
